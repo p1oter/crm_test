@@ -1,0 +1,70 @@
+﻿@model CRM.Models.Service
+
+@{
+    ViewData["Title"] = "Usunięcie Usługi";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="text-danger">@ViewData["Title"]</h1>
+
+            <div class="alert alert-warning" role="alert">
+                <strong>⚠️ Uwaga!</strong> Czy na pewno chcesz usunąć tę usługę? Ta operacja nie może być cofnięta.
+            </div>
+
+            <dl class="row">
+                <dt class="col-sm-3">ID:</dt>
+                <dd class="col-sm-9">@Model.Id</dd>
+
+                <dt class="col-sm-3">Nazwa:</dt>
+                <dd class="col-sm-9">@Model.Name</dd>
+
+                <dt class="col-sm-3">Kategoria:</dt>
+                <dd class="col-sm-9">
+                    @if (Model.ServiceGroup != null)
+                    {
+                        @Model.ServiceGroup.Name
+                    }
+                    else
+                    {
+                            <span>Brak</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Cena:</dt>
+                <dd class="col-sm-9">@Model.Price?.ToString("C")</dd>
+
+                <dt class="col-sm-3">Liczba rezerwacji:</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Reservations?.Any() == true)
+                    {
+                            <span class="badge bg-primary">@Model.Reservations.Count</span>
+                    }
+                    else
+                    {
+                            <span>0</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Liczba pozycji na fakturach:</dt>
+                <dd class="col-sm-9">
+                    @if (Model.InvoiceLines?.Any() == true)
+                    {
+                            <span class="badge bg-info">@Model.InvoiceLines.Count</span>
+                    }
+                    else
+                    {
+                            <span>0</span>
+                    }
+                </dd>
+            </dl>
+
+            <form asp-action="Delete" method="post" class="mt-4">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger">Usuń</button>
+                <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+            </form>
+        </div>
+    </div>
+</div>

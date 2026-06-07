@@ -1,0 +1,61 @@
+﻿@model CRM.Models.Employee
+
+@{
+    ViewData["Title"] = "Usunięcie Pracownika";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="text-danger">@ViewData["Title"]</h1>
+
+            <div class="alert alert-warning" role="alert">
+                <strong>⚠️ Uwaga!</strong> Czy na pewno chcesz usunąć tego pracownika? Ta operacja nie może być cofnięta.
+            </div>
+
+            <dl class="row">
+                <dt class="col-sm-3">ID:</dt>
+                <dd class="col-sm-9">@Model.Id</dd>
+
+                <dt class="col-sm-3">Imię:</dt>
+                <dd class="col-sm-9">@Model.FirstName</dd>
+
+                <dt class="col-sm-3">Nazwisko:</dt>
+                <dd class="col-sm-9">@Model.LastName</dd>
+
+                <dt class="col-sm-3">Stanowisko:</dt>
+                <dd class="col-sm-9">@Model.Position</dd>
+
+                <dt class="col-sm-3">Przełożony:</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Supervisor != null)
+                    {
+                        @($"{Model.Supervisor.FirstName} {Model.Supervisor.LastName}")
+                    }
+                    else
+                    {
+                            <span>Brak</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Podwładni:</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Subordinates?.Any() == true)
+                    {
+                            <span class="badge bg-info">@Model.Subordinates.Count</span>
+                    }
+                    else
+                    {
+                            <span>Brak</span>
+                    }
+                </dd>
+            </dl>
+
+            <form asp-action="Delete" method="post" class="mt-4">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger">Usuń</button>
+                <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+            </form>
+        </div>
+    </div>
+</div>

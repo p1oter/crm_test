@@ -1,0 +1,78 @@
+﻿@model CRM.Models.Employee
+
+@{
+    ViewData["Title"] = "Szczegóły Pracownika";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <dl class="row">
+                <dt class="col-sm-3">ID:</dt>
+                <dd class="col-sm-9">@Model.Id</dd>
+
+                <dt class="col-sm-3">Imię:</dt>
+                <dd class="col-sm-9">@Model.FirstName</dd>
+
+                <dt class="col-sm-3">Nazwisko:</dt>
+                <dd class="col-sm-9">@Model.LastName</dd>
+
+                <dt class="col-sm-3">Stanowisko:</dt>
+                <dd class="col-sm-9">@Model.Position</dd>
+
+                <dt class="col-sm-3">Przełożony:</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Supervisor != null)
+                    {
+                        @($"{Model.Supervisor.FirstName} {Model.Supervisor.LastName}")
+                    }
+                    else
+                    {
+                            <span>Brak</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Podwładni:</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Subordinates?.Any() == true)
+                    {
+                            <ul class="list-unstyled">
+                            @foreach (var subordinate in Model.Subordinates)
+                            {
+                                        <li>@subordinate.FirstName @subordinate.LastName - @subordinate.Position</li>
+                            }
+                            </ul>
+                    }
+                    else
+                    {
+                            <span>Brak</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">Umiejętności:</dt>
+                <dd class="col-sm-9">
+                    @if (Model.Skills?.Any() == true)
+                    {
+                            <ul class="list-unstyled">
+                            @foreach (var skill in Model.Skills)
+                            {
+                                        <li>@skill.ServiceGroup?.Name</li>
+                            }
+                            </ul>
+                    }
+                    else
+                    {
+                            <span>Brak</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edytuj</a>
+        <a asp-action="Index" class="btn btn-secondary">Powrót do listy</a>
+    </div>
+</div>
