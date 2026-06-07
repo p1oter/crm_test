@@ -1,0 +1,94 @@
+﻿@model CRM.Models.Client
+
+@{
+    ViewData["Title"] = "Nowy Klient";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>@ViewData["Title"]</h1>
+
+            <form asp-action="Create" method="post" class="needs-validation" novalidate>
+                <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="FirstName" class="form-label">Imię <span class="text-danger">*</span></label>
+                        <input asp-for="FirstName" class="form-control" required />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="LastName" class="form-label">Nazwisko <span class="text-danger">*</span></label>
+                        <input asp-for="LastName" class="form-control" required />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Email <span class="text-danger">*</span></label>
+                    <input asp-for="Email" type="email" class="form-control" required />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Street" class="form-label">Ulica <span class="text-danger">*</span></label>
+                    <input asp-for="Street" class="form-control" required />
+                    <span asp-validation-for="Street" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="HouseNumber" class="form-label">Numer domu <span class="text-danger">*</span></label>
+                        <input asp-for="HouseNumber" class="form-control" required />
+                        <span asp-validation-for="HouseNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="ApartmentNumber" class="form-label">Numer mieszkania</label>
+                        <input asp-for="ApartmentNumber" class="form-control" />
+                        <span asp-validation-for="ApartmentNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="PostalCode" class="form-label">Kod pocztowy <span class="text-danger">*</span></label>
+                        <input asp-for="PostalCode" class="form-control" required />
+                        <span asp-validation-for="PostalCode" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="City" class="form-label">Miasto <span class="text-danger">*</span></label>
+                        <input asp-for="City" class="form-control" required />
+                        <span asp-validation-for="City" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Country" class="form-label">Kraj <span class="text-danger">*</span></label>
+                        <input asp-for="Country" class="form-control" required />
+                        <span asp-validation-for="Country" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="bankAccount" class="form-label">Konto bankowe <span class="text-danger">*</span></label>
+                    <input type="text" id="bankAccount" name="bankAccount" class="form-control" required placeholder="26 cyfr" />
+                    <small class="form-text text-muted">Numer konta bankowego (26 cyfr)</small>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Dodaj klienta</button>
+                    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,65 @@
+﻿@model CRM.Models.Client
+
+@{
+    ViewData["Title"] = "Usunięcie Klienta";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 class="text-danger">@ViewData["Title"]</h1>
+
+            <div class="alert alert-warning" role="alert">
+                <strong>⚠️ Uwaga!</strong> Czy na pewno chcesz usunąć tego klienta? Ta operacja nie może być cofnięta.
+            </div>
+
+            <dl class="row">
+                <dt class="col-sm-3">ID:</dt>
+                <dd class="col-sm-9">@Model.Id</dd>
+
+                <dt class="col-sm-3">Imię:</dt>
+                <dd class="col-sm-9">@Model.FirstName</dd>
+
+                <dt class="col-sm-3">Nazwisko:</dt>
+                <dd class="col-sm-9">@Model.LastName</dd>
+
+                <dt class="col-sm-3">Email:</dt>
+                <dd class="col-sm-9">@Model.Email</dd>
+
+                <dt class="col-sm-3">Ulica:</dt>
+                <dd class="col-sm-9">
+                    @Model.Street @Model.HouseNumber 
+                    @(string.IsNullOrEmpty(Model.ApartmentNumber) ? "" : $"/{Model.ApartmentNumber}")
+                </dd>
+
+                <dt class="col-sm-3">Kod pocztowy:</dt>
+                <dd class="col-sm-9">@Model.PostalCode</dd>
+
+                <dt class="col-sm-3">Miasto:</dt>
+                <dd class="col-sm-9">@Model.City</dd>
+
+                <dt class="col-sm-3">Kraj:</dt>
+                <dd class="col-sm-9">@Model.Country</dd>
+
+                @if (Model.BillInfo != null)
+                {
+                        <dt class="col-sm-3">Saldo:</dt>
+                        <dd class="col-sm-9">@Model.BillInfo.Balance?.ToString("C")</dd>
+
+                        <dt class="col-sm-3">Konto bankowe:</dt>
+                        <dd class="col-sm-9">@Model.BillInfo.BankAccount</dd>
+                }
+            </dl>
+
+            <form asp-action="Delete" asp-controller="Clients" method="post">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Potwierdź usunięcie
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
