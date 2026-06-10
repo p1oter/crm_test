@@ -1,0 +1,88 @@
+﻿@model IEnumerable<CRM.Models.Payment>
+
+@{
+    ViewData["Title"] = "Historia Płatności";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1>@ViewData["Title"]</h1>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Data Płatności</th>
+                            <th>Klient</th>
+                            <th>Email</th>
+                            <th>Numer Konta</th>
+                            <th>Kwota (PLN)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.CreatedT.ToString("dd.MM.yyyy HH:mm:ss")</td>
+                                    <td>@item.BillInfo?.Client?.FirstName @item.BillInfo?.Client?.LastName</td>
+                                    <td>@item.BillInfo?.Client?.Email</td>
+                                    <td>
+                                        <code class="bg-light p-1">@item.BankAccount</code>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success fs-6">
+                                    @item.Amount?.ToString("F2") zł
+                                        </span>
+                                    </td>
+                                </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">Podsumowanie</h5>
+                        </div>
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-2">Liczba Płatności</dt>
+                                <dd class="col-sm-4">
+                                    <span class="badge bg-primary">@Model.Count()</span>
+                                </dd>
+
+                                <dt class="col-sm-2">Łączna Kwota</dt>
+                                <dd class="col-sm-4">
+                                    <span class="badge bg-success fs-6">
+                                    @Model.Sum(p => p.Amount ?? 0).ToString("F2") zł
+                                    </span>
+                                </dd>
+
+                                <dt class="col-sm-2">Średnia Kwota</dt>
+                                <dd class="col-sm-4">
+                                    <span class="badge bg-info">
+                                    @(Model.Count() > 0 ? (Model.Sum(p => p.Amount ?? 0) / Model.Count()).ToString("F2") : "0.00") zł
+                                    </span>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    }
+    else
+    {
+            <div class="alert alert-info">
+                Brak płatności w bazie danych.
+            </div>
+    }
+</div>
