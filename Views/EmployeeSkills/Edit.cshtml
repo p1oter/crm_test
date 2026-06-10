@@ -1,0 +1,53 @@
+﻿@model CRM.Models.EmployeeSkills
+
+@{
+    ViewData["Title"] = "Edycja Umiejętności Pracownika";
+    var employees = ViewData["Employees"] as List<CRM.Models.Employee>;
+    var serviceGroups = ViewData["ServiceGroups"] as List<CRM.Models.ServiceGroup>;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>@ViewData["Title"]</h1>
+
+            <form asp-action="Edit" method="post" class="needs-validation" novalidate>
+                <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+
+                <input type="hidden" asp-for="EmployeeId" />
+                <input type="hidden" asp-for="ServiceGroupId" />
+
+                <div class="mb-3">
+                    <label asp-for="EmployeeId" class="form-label">Pracownik</label>
+                    <select class="form-select" disabled>
+                        <option selected>@Model.Employee?.FirstName @Model.Employee?.LastName (@Model.Employee?.Position)</option>
+                    </select>
+                    <small class="form-text text-muted">To pole nie może być zmieniane</small>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ServiceGroupId" class="form-label">Kategoria Usługi</label>
+                    <select class="form-select" disabled>
+                        <option selected>@Model.ServiceGroup?.Name</option>
+                    </select>
+                    <small class="form-text text-muted">To pole nie może być zmieniane</small>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>Informacja:</strong> Ta umiejętność jest zdefiniowana przez parę klucz główny (Pracownik + Kategoria). Aby zmienić umiejętność, usuń tę i dodaj nową.
+                </div>
+
+                <div class="mt-4">
+                    <a asp-action="Delete" asp-route-employeeId="@Model.EmployeeId" asp-route-serviceGroupId="@Model.ServiceGroupId" class="btn btn-danger">Usuń umiejętność</a>
+                    <a asp-action="Index" class="btn btn-secondary">Powrót</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

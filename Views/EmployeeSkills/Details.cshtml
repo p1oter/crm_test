@@ -1,0 +1,70 @@
+﻿@model CRM.Models.EmployeeSkills
+
+@{
+    ViewData["Title"] = "Szczegóły Umiejętności Pracownika";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>@ViewData["Title"]</h1>
+
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Informacje o Pracowniku</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">ID</dt>
+                        <dd class="col-sm-9">@Model.EmployeeId</dd>
+
+                        <dt class="col-sm-3">Imię i Nazwisko</dt>
+                        <dd class="col-sm-9">@Model.Employee?.FirstName @Model.Employee?.LastName</dd>
+
+                        <dt class="col-sm-3">Stanowisko</dt>
+                        <dd class="col-sm-9">@Model.Employee?.Position</dd>
+
+                        @if (Model.Employee?.Supervisor != null)
+                        {
+                                <dt class="col-sm-3">Przełożony</dt>
+                                <dd class="col-sm-9">@Model.Employee.Supervisor.FirstName @Model.Employee.Supervisor.LastName</dd>
+                        }
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Kategoria Usługi</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">ID Kategorii</dt>
+                        <dd class="col-sm-9">@Model.ServiceGroupId</dd>
+
+                        <dt class="col-sm-3">Nazwa Kategorii</dt>
+                        <dd class="col-sm-9">@Model.ServiceGroup?.Name</dd>
+
+                        <dt class="col-sm-3">Liczba Usług</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.ServiceGroup?.Services?.Count > 0)
+                            {
+                                    <span class="badge bg-info">@Model.ServiceGroup.Services.Count</span>
+                            }
+                            else
+                            {
+                                    <span class="text-muted">-</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <a asp-action="Edit" asp-route-employeeId="@Model.EmployeeId" asp-route-serviceGroupId="@Model.ServiceGroupId" class="btn btn-warning">Edytuj</a>
+                <a asp-action="Delete" asp-route-employeeId="@Model.EmployeeId" asp-route-serviceGroupId="@Model.ServiceGroupId" class="btn btn-danger">Usuń</a>
+                <a asp-action="Index" class="btn btn-secondary">Powrót do listy</a>
+            </div>
+        </div>
+    </div>
+</div>

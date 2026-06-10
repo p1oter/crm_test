@@ -1,0 +1,39 @@
+﻿@model CRM.Models.EmployeeSkills
+
+@{
+    ViewData["Title"] = "Usuwanie Umiejętności Pracownika";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>@ViewData["Title"]</h1>
+
+            <div class="alert alert-warning" role="alert">
+                <strong>Uwaga!</strong> Ta operacja jest nieodwracalna.
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Pracownik</dt>
+                        <dd class="col-sm-9">@Model.Employee?.FirstName @Model.Employee?.LastName</dd>
+
+                        <dt class="col-sm-3">Stanowisko</dt>
+                        <dd class="col-sm-9">@Model.Employee?.Position</dd>
+
+                        <dt class="col-sm-3">Kategoria Usługi</dt>
+                        <dd class="col-sm-9">@Model.ServiceGroup?.Name</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <form asp-action="DeleteConfirmed" method="post" class="mt-3">
+                <input type="hidden" asp-for="EmployeeId" />
+                <input type="hidden" asp-for="ServiceGroupId" />
+                <button type="submit" class="btn btn-danger">Usuń umiejętność</button>
+                <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+            </form>
+        </div>
+    </div>
+</div>

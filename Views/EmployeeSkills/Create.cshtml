@@ -1,0 +1,60 @@
+﻿@model CRM.Models.EmployeeSkills
+
+@{
+    ViewData["Title"] = "Dodaj Umiejętność Pracownika";
+    var employees = ViewData["Employees"] as List<CRM.Models.Employee>;
+    var serviceGroups = ViewData["ServiceGroups"] as List<CRM.Models.ServiceGroup>;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>@ViewData["Title"]</h1>
+
+            <form asp-action="Create" method="post" class="needs-validation" novalidate>
+                <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+
+                <div class="mb-3">
+                    <label asp-for="EmployeeId" class="form-label">Pracownik <span class="text-danger">*</span></label>
+                    <select asp-for="EmployeeId" class="form-select" required>
+                        <option value="">-- Wybierz pracownika --</option>
+                        @if (employees != null)
+                        {
+                            @foreach (var employee in employees.OrderBy(e => e.FirstName))
+                            {
+                                        <option value="@employee.Id">@employee.FirstName @employee.LastName (@employee.Position)</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ServiceGroupId" class="form-label">Kategoria Usługi <span class="text-danger">*</span></label>
+                    <select asp-for="ServiceGroupId" class="form-select" required>
+                        <option value="">-- Wybierz kategorię --</option>
+                        @if (serviceGroups != null)
+                        {
+                            @foreach (var serviceGroup in serviceGroups.OrderBy(sg => sg.Name))
+                            {
+                                        <option value="@serviceGroup.Id">@serviceGroup.Name</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="ServiceGroupId" class="text-danger"></span>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Dodaj umiejętność</button>
+                    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

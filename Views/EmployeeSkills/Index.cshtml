@@ -1,0 +1,61 @@
+﻿@model IEnumerable<CRM.Models.EmployeeSkills>
+
+@{
+    ViewData["Title"] = "Umiejętności Pracowników";
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h1>@ViewData["Title"]</h1>
+        </div>
+        <div class="col-md-6 text-end">
+            <a asp-action="Create" class="btn btn-primary">+ Nowa Umiejętność</a>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID Pracownika</th>
+                            <th>Imię i Nazwisko</th>
+                            <th>Stanowisko</th>
+                            <th>Kategoria Usługi</th>
+                            <th>Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                                <tr>
+                                    <td>@item.EmployeeId</td>
+                                    <td>@item.Employee?.FirstName @item.Employee?.LastName</td>
+                                    <td>@item.Employee?.Position</td>
+                                    <td>@item.ServiceGroup?.Name</td>
+                                    <td>
+                                        <a asp-action="Details" asp-route-employeeId="@item.EmployeeId" asp-route-serviceGroupId="@item.ServiceGroupId" class="btn btn-sm btn-info">
+                                            Podgląd
+                                        </a>
+                                        <a asp-action="Edit" asp-route-employeeId="@item.EmployeeId" asp-route-serviceGroupId="@item.ServiceGroupId" class="btn btn-sm btn-warning">
+                                            Edytuj
+                                        </a>
+                                        <a asp-action="Delete" asp-route-employeeId="@item.EmployeeId" asp-route-serviceGroupId="@item.ServiceGroupId" class="btn btn-sm btn-danger">
+                                            Usuń
+                                        </a>
+                                    </td>
+                                </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+    }
+    else
+    {
+            <div class="alert alert-info">
+                Brak umiejętności pracowników w bazie danych.
+            </div>
+    }
+</div>
