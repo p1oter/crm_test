@@ -1,0 +1,84 @@
+﻿@model CRM.Models.Reservation
+
+@{
+    ViewData["Title"] = "Edycja Rezerwacji";
+    var employees = ViewData["Employees"] as List<CRM.Models.Employee>;
+    var clients = ViewData["Clients"] as List<CRM.Models.Client>;
+    var services = ViewData["Services"] as List<CRM.Models.Service>;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>@ViewData["Title"]</h1>
+
+            <form asp-action="Edit" method="post" class="needs-validation" novalidate>
+                <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label for="StartT" class="form-label">Data i Godzina <span class="text-danger">*</span></label>
+                    <input asp-for="StartT" type="datetime-local" class="form-control" required />
+                    <span asp-validation-for="StartT" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="EmployeeId" class="form-label">Pracownik <span class="text-danger">*</span></label>
+                    <select asp-for="EmployeeId" class="form-select" required>
+                        <option value="">-- Wybierz pracownika --</option>
+                        @if (employees != null)
+                        {
+                            @foreach (var employee in employees)
+                            {
+                                        <option value="@employee.Id" selected="@(employee.Id == Model.EmployeeId ? "selected" : "")">@employee.FirstName @employee.LastName (@employee.Position)</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ClientId" class="form-label">Klient <span class="text-danger">*</span></label>
+                    <select asp-for="ClientId" class="form-select" required>
+                        <option value="">-- Wybierz klienta --</option>
+                        @if (clients != null)
+                        {
+                            @foreach (var client in clients)
+                            {
+                                        <option value="@client.Id" selected="@(client.Id == Model.ClientId ? "selected" : "")">@client.FirstName @client.LastName (@client.Email)</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="ClientId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ServiceId" class="form-label">Usługa <span class="text-danger">*</span></label>
+                    <select asp-for="ServiceId" class="form-select" required>
+                        <option value="">-- Wybierz usługę --</option>
+                        @if (services != null)
+                        {
+                            @foreach (var service in services)
+                            {
+                                        <option value="@service.Id" selected="@(service.Id == Model.ServiceId ? "selected" : "")">@service.Name (@service.Price?.ToString("C"))</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="ServiceId" class="text-danger"></span>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+                    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
