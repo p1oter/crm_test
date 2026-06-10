@@ -1,0 +1,119 @@
+﻿@model CRM.Models.ServiceGroup
+
+@{
+    ViewData["Title"] = "Szczegóły Kategorii Usługi";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>@ViewData["Title"]</h1>
+
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Informacje o Kategorii</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">ID</dt>
+                        <dd class="col-sm-9">@Model.Id</dd>
+
+                        <dt class="col-sm-3">Nazwa</dt>
+                        <dd class="col-sm-9">@Model.Name</dd>
+                    </dl>
+                </div>
+            </div>
+
+            @if (Model.Services != null && Model.Services.Any())
+            {
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">Usługi (@Model.Services.Count)</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Nazwa</th>
+                                            <th>Cena (PLN)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach (var service in Model.Services.OrderBy(s => s.Name))
+                                    {
+                                                <tr>
+                                                    <td>@service.Id</td>
+                                                    <td>@service.Name</td>
+                                                    <td>
+                                                @if (service.Price.HasValue)
+                                                {
+                                                                <span class="badge bg-info">@service.Price.Value.ToString("F2")</span>
+                                                }
+                                                else
+                                                {
+                                                                <span class="text-muted">-</span>
+                                                }
+                                                    </td>
+                                                </tr>
+                                    }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+            }
+            else
+            {
+                    <div class="alert alert-info">
+                        Brak usług w tej kategorii.
+                    </div>
+            }
+
+            @if (Model.EmployeeSkills != null && Model.EmployeeSkills.Any())
+            {
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">Pracownicy z Umiejętnościami (@Model.EmployeeSkills.Count)</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID Pracownika</th>
+                                            <th>Imię i Nazwisko</th>
+                                            <th>Stanowisko</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach (var skill in Model.EmployeeSkills.OrderBy(es => es.Employee.FirstName))
+                                    {
+                                                <tr>
+                                                    <td>@skill.Employee?.Id</td>
+                                                    <td>@skill.Employee?.FirstName @skill.Employee?.LastName</td>
+                                                    <td>@skill.Employee?.Position</td>
+                                                </tr>
+                                    }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+            }
+            else
+            {
+                    <div class="alert alert-info">
+                        Brak pracowników z umiejętnościami w tej kategorii.
+                    </div>
+            }
+
+            <div class="mt-4">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edytuj</a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Usuń</a>
+                <a asp-action="Index" class="btn btn-secondary">Powrót do listy</a>
+            </div>
+        </div>
+    </div>
+</div>

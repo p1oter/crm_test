@@ -1,0 +1,63 @@
+﻿@model CRM.Models.ServiceGroup
+
+@{
+    ViewData["Title"] = "Usuwanie Kategorii Usługi";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>@ViewData["Title"]</h1>
+
+            @if (ViewBag.Error != null)
+            {
+                    <div class="alert alert-danger" role="alert">
+                    @ViewBag.Error
+                    </div>
+            }
+
+            <div class="alert alert-warning" role="alert">
+                <strong>Uwaga!</strong> Ta operacja jest nieodwracalna.
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">ID</dt>
+                        <dd class="col-sm-9">@Model.Id</dd>
+
+                        <dt class="col-sm-3">Nazwa</dt>
+                        <dd class="col-sm-9">@Model.Name</dd>
+
+                        <dt class="col-sm-3">Liczba Usług</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.Services?.Count > 0)
+                            {
+                                    <span class="badge bg-danger">@Model.Services.Count</span>
+                            }
+                            else
+                            {
+                                    <span class="text-muted">-</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            @if (Model.Services != null && Model.Services.Any())
+            {
+                    <div class="alert alert-info mt-3" role="alert">
+                        <strong>Uwaga:</strong> Ta kategoria ma powiązane usługi. Nie możesz jej usunąć, dopóki nie usuniesz wszystkich usług z tej kategorii.
+                    </div>
+            }
+            else
+            {
+                    <form asp-action="DeleteConfirmed" method="post" class="mt-3">
+                        <input type="hidden" asp-for="Id" />
+                        <button type="submit" class="btn btn-danger">Usuń kategorię</button>
+                        <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+                    </form>
+            }
+        </div>
+    </div>
+</div>
