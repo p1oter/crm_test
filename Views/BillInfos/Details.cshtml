@@ -1,0 +1,119 @@
+﻿@model CRM.Models.BillInfo
+
+@{
+    ViewData["Title"] = "Szczegóły Informacji Rozliczeniowej";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>@ViewData["Title"]</h1>
+
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Informacje o Kliencie</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Imię i Nazwisko</dt>
+                        <dd class="col-sm-9">@Model.Client?.FirstName @Model.Client?.LastName</dd>
+
+                        <dt class="col-sm-3">Email</dt>
+                        <dd class="col-sm-9">@Model.Client?.Email</dd>
+
+                        <dt class="col-sm-3">Ulica</dt>
+                        <dd class="col-sm-9">@Model.Client?.Street @Model.Client?.HouseNumber
+                            @if (!string.IsNullOrEmpty(Model.Client?.ApartmentNumber))
+                            {
+                                <text>/@Model.Client?.ApartmentNumber</text>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">Kod Pocztowy</dt>
+                        <dd class="col-sm-9">@Model.Client?.PostalCode</dd>
+
+                        <dt class="col-sm-3">Miasto</dt>
+                        <dd class="col-sm-9">@Model.Client?.City</dd>
+
+                        <dt class="col-sm-3">Kraj</dt>
+                        <dd class="col-sm-9">@Model.Client?.Country</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Informacje Rozliczeniowe</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Numer Konta</dt>
+                        <dd class="col-sm-9">
+                            <code class="bg-light p-2">@Model.BankAccount</code>
+                        </dd>
+
+                        <dt class="col-sm-3">Saldo (PLN)</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.Balance.HasValue)
+                            {
+                                    <span class="badge @(Model.Balance >= 0 ? "bg-success" : "bg-danger") fs-6">
+                                    @Model.Balance.Value.ToString("F2") zł
+                                    </span>
+                            }
+                            else
+                            {
+                                    <span class="text-muted">-</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            @if (Model.Payments != null && Model.Payments.Any())
+            {
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">Historia Płatności (@Model.Payments.Count)</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Data</th>
+                                            <th>Kwota (PLN)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach (var payment in Model.Payments.OrderByDescending(p => p.CreatedT))
+                                    {
+                                                <tr>
+                                                    <td>@payment.Id</td>
+                                                    <td>@payment.CreatedT.ToString("dd.MM.yyyy HH:mm")</td>
+                                                    <td>
+                                                        <span class="badge bg-warning">
+                                                    @payment.Amount?.ToString("F2") zł
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                    }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+            }
+            else
+            {
+                    <div class="alert alert-info">
+                        Brak historii płatności.
+                    </div>
+            }
+
+            <div class="mt-4">
+                <a asp-action="Index" class="btn btn-secondary">Powrót do listy</a>
+            </div>
+        </div>
+    </div>
+</div>

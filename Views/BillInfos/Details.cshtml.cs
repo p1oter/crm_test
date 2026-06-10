@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace CRM.Views.Servieces
+namespace CRM.Views.BillInfos
 {
     public class DetailsModel : PageModel
     {
