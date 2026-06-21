@@ -1,0 +1,121 @@
+﻿@model CRM.Models.Invoice
+@{
+    Layout = null; // albo użyj domyślnego layoutu jeśli chcesz header/footer strony
+    decimal subtotal = Model.Lines?.Sum(l => (l.Price ?? 0m) * l.Amount) ?? 0m;
+    decimal taxRate = 0.0m; // ustaw jeśli chcesz VAT np. 0.23m
+    decimal tax = Math.Round(subtotal * taxRate, 2);
+    decimal total = subtotal + tax;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Faktura #@Model.Id</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body { font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #222; }
+        .invoice-box { padding: 20px; }
+        .table th, .table td { vertical-align: middle; }
+        .logo { font-size:18px; font-weight:700; }
+        .small { font-size: 11px; color: #666; }
+        .right { text-align: right; }
+    </style>
+</head>
+<body>
+    <div class="invoice-box container">
+        <div class="row mb-4">
+            <div class="col-6">
+                <div class="logo">Twoja Firma</div>
+                <div class="small">Adres firmy<br/>NIP: 000-000-00-00</div>
+            </div>
+            <div class="col-6 text-end">
+                <h4>Faktura VAT</h4>
+                <div>Nr: <strong>@Model.Id</strong></div>
+                <div>Data wystawienia: @Model.CreatedT.ToString("dd.MM.yyyy")</div>
+                <div>Termin płatności: @(Model.DueT?.ToString("dd.MM.yyyy") ?? "-")</div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-6">
+                <h6>Do:</h6>
+                <div><strong>@Model.Client?.FirstName @Model.Client?.LastName</strong></div>
+                <div class="small">@Model.Client?.Street @Model.Client?.HouseNumber @if (!string.IsNullOrEmpty(Model.Client?.ApartmentNumber))
+                    {
+                        <text>/@Model.Client?.ApartmentNumber</text>
+                    }</div>
+                <div class="small">@Model.Client?.PostalCode @Model.Client?.City</div>
+                <div class="small">@Model.Client?.Email</div>
+            </div>
+
+            <div class="col-6 text-end">
+                <h6>Szczegóły płatności:</h6>
+                <div>Numer konta: <code>@Model.Client?.BillInfo?.BankAccount</code></div>
+                <div>Saldo: @((Model.Client?.BillInfo?.Balance.HasValue ?? false) ? Model.Client.BillInfo.Balance.Value.ToString("F2") + " zł" : "0.00 zł")</div>
+            </div>
+        </div>
+
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Usługa</th>
+                        <th>Wykonawca</th>
+                        <th class="text-end">Cena jedn. (PLN)</th>
+                        <th class="text-end">Ilość</th>
+                        <th class="text-end">Wartość (PLN)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Lines != null && Model.Lines.Any())
+                    {
+                        int idx = 1;
+                        foreach (var line in Model.Lines)
+                        {
+                            decimal lineTotal = (line.Price ?? 0m) * line.Amount;
+                                    <tr>
+                                        <td>@idx</td>
+                                        <td>@line.Service?.Name</td>
+                                        <td>@line.Employee?.FirstName @line.Employee?.LastName</td>
+                                        <td class="text-end">@((line.Price ?? 0m).ToString("F2"))</td>
+                                        <td class="text-end">@line.Amount</td>
+                                        <td class="text-end">@lineTotal.ToString("F2")</td>
+                                    </tr>
+                            idx++;
+                        }
+                    }
+                    else
+                    {
+                            <tr>
+                                <td colspan="6" class="text-center small">Brak pozycji na fakturze.</td>
+                            </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5" class="right"><strong>Suma netto</strong></td>
+                        <td class="text-end">@subtotal.ToString("F2")</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="right"><strong>VAT (@(taxRate * 100)%)</strong></td>
+                        <td class="text-end">@tax.ToString("F2")</td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="right"><strong>Do zapłaty</strong></td>
+                        <td class="text-end"><strong>@total.ToString("F2") zł</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12 text-end">
+                <a class="btn btn-secondary" href="@Url.Action("Index", "Invoices")">Powrót</a>
+                <a class="btn btn-primary" href="@Url.Action("Pdf", "InvoicePrint", new { id = Model.Id })">Pobierz PDF</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
