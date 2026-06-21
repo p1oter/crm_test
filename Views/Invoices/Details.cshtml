@@ -1,0 +1,72 @@
+﻿@model CRM.Models.Invoice
+
+@{
+    ViewData["Title"] = "Szczegóły faktury";
+    var subtotal = Model.Lines?.Sum(l => (l.Price) * l.Amount) ?? 0m;
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"] - #@Model.Id</h1>
+
+    <dl class="row">
+        <dt class="col-sm-3">Klient</dt>
+        <dd class="col-sm-9">@Model.Client?.FirstName @Model.Client?.LastName</dd>
+
+        <dt class="col-sm-3">Data wystawienia</dt>
+        <dd class="col-sm-9">@Model.CreatedT.ToString("dd.MM.yyyy")</dd>
+
+        <dt class="col-sm-3">Termin</dt>
+        <dd class="col-sm-9">@Model.DueT?.ToString("dd.MM.yyyy") ?? "-"</dd>
+    </dl>
+
+    <h5>Pozycje</h5>
+    @if (Model.Lines != null && Model.Lines.Any())
+    {
+            <table class="table table-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Usługa</th>
+                        <th>Wykonawca</th>
+                        <th class="text-end">Cena</th>
+                        <th class="text-end">Ilość</th>
+                        <th class="text-end">Wartość</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @{
+                    int idx = 1;
+                    foreach (var l in Model.Lines)
+                    {
+                        var lt = (l.Price) * l.Amount;
+                                    <tr>
+                                        <td>@idx</td>
+                                        <td>@l.Service?.Name</td>
+                                        <td>@l.Employee?.FirstName @l.Employee?.LastName</td>
+                                        <td class="text-end">@((l.Price).ToString("F2"))</td>
+                                        <td class="text-end">@l.Amount</td>
+                                        <td class="text-end">@lt.ToString("F2")</td>
+                                    </tr>
+                        ;
+                        idx++;
+                    }
+                }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5" class="text-end"><strong>Suma</strong></td>
+                        <td class="text-end"><strong>@subtotal.ToString("F2") zł</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+    }
+    else
+    {
+            <div class="alert alert-info">Brak pozycji na fakturze.</div>
+    }
+
+    <div class="mt-3">
+        <a asp-action="Index" class="btn btn-secondary">Powrót</a>
+        <a asp-controller="InvoicePrint" asp-action="Pdf" asp-route-id="@Model.Id" class="btn btn-primary">Pobierz PDF</a>
+    </div>
+</div>

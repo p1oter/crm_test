@@ -1,0 +1,50 @@
+﻿@model IEnumerable<CRM.Models.Invoice>
+
+@{
+    ViewData["Title"] = "Faktury";
+}
+
+<div class="container mt-4">
+    <div class="row mb-3">
+        <div class="col-md-6"><h1>@ViewData["Title"]</h1></div>
+        <div class="col-md-6 text-end"><a asp-action="Create" class="btn btn-primary">+ Nowa Faktura</a></div>
+    </div>
+
+    @if (Model.Any())
+    {
+            <table class="table table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Klient</th>
+                        <th>Data wystawienia</th>
+                        <th>Pozycji</th>
+                        <th>Do zapłaty</th>
+                        <th>Akcje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var inv in Model)
+                {
+                    var total = inv.Lines?.Sum(l => (l.Price) * l.Amount) ?? 0m;
+                            <tr>
+                                <td>@inv.Id</td>
+                                <td>@inv.Client?.FirstName @inv.Client?.LastName</td>
+                                <td>@inv.CreatedT.ToString("dd.MM.yyyy")</td>
+                                <td>@(inv.Lines?.Count ?? 0)</td>
+                                <td>@total.ToString("F2") zł</td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@inv.Id" class="btn btn-sm btn-info">Szczegóły</a>
+                                    <a asp-action="Edit" asp-route-id="@inv.Id" class="btn btn-sm btn-warning">Edytuj</a>
+                                    <a asp-action="Delete" asp-route-id="@inv.Id" class="btn btn-sm btn-danger">Usuń</a>
+                                </td>
+                            </tr>
+                }
+                </tbody>
+            </table>
+    }
+    else
+    {
+            <div class="alert alert-info">Brak faktur w bazie danych.</div>
+    }
+</div>

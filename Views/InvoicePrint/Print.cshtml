@@ -1,8 +1,8 @@
 ﻿@model CRM.Models.Invoice
 @{
     Layout = null; // albo użyj domyślnego layoutu jeśli chcesz header/footer strony
-    decimal subtotal = Model.Lines?.Sum(l => (l.Price ?? 0m) * l.Amount) ?? 0m;
-    decimal taxRate = 0.0m; // ustaw jeśli chcesz VAT np. 0.23m
+    decimal subtotal = Model.Lines?.Sum(l => (l.Price) * l.Amount) ?? 0m;
+    decimal taxRate = 0.23m; // ustaw jeśli chcesz VAT np. 0.23m
     decimal tax = Math.Round(subtotal * taxRate, 2);
     decimal total = subtotal + tax;
 }
@@ -74,12 +74,12 @@
                         int idx = 1;
                         foreach (var line in Model.Lines)
                         {
-                            decimal lineTotal = (line.Price ?? 0m) * line.Amount;
+                            decimal lineTotal = (line.Price) * line.Amount;
                                     <tr>
                                         <td>@idx</td>
                                         <td>@line.Service?.Name</td>
                                         <td>@line.Employee?.FirstName @line.Employee?.LastName</td>
-                                        <td class="text-end">@((line.Price ?? 0m).ToString("F2"))</td>
+                                        <td class="text-end">@((line.Price).ToString("F2"))</td>
                                         <td class="text-end">@line.Amount</td>
                                         <td class="text-end">@lineTotal.ToString("F2")</td>
                                     </tr>

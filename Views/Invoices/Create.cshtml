@@ -1,0 +1,216 @@
+﻿@using System.Globalization
+@model CRM.Models.Invoice
+
+@{
+    ViewData["Title"] = "Nowa faktura";
+    var clients = ViewData["Clients"] as List<CRM.Models.Client> ?? new List<CRM.Models.Client>();
+    var createdDefault = (Model?.CreatedT == default) ? DateTime.Now : Model.CreatedT;
+    var createdValue = createdDefault.ToString("yyyy-MM-ddTHH:mm");
+}
+
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>@ViewData["Title"]</h1>
+        </div>
+    </div>
+
+    <form asp-action="Create" method="post" class="needs-validation" novalidate>
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Dane faktury</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label asp-for="ClientId" class="form-label">Klient <span class="text-danger">*</span></label>
+                    <select asp-for="ClientId" class="form-select" required>
+                        <option value="">-- Wybierz klienta --</option>
+                        @foreach (var c in clients.OrderBy(x => x.FirstName))
+                        {
+                                <option value="@c.Id">@c.FirstName @c.LastName (@c.Email)</option>
+                        }
+                    </select>
+                    <span asp-validation-for="ClientId" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="CreatedT" class="form-label">Data wystawienia <span class="text-danger">*</span></label>
+                        <input asp-for="CreatedT" type="datetime-local" class="form-control" value="@createdValue" required />
+                        <span asp-validation-for="CreatedT" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="DueT" class="form-label">Termin płatności</label>
+                        <input asp-for="DueT" type="date" class="form-control" />
+                        <span asp-validation-for="DueT" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Pozycje faktury</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="invoice-lines-table" class="table table-sm table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 50px">#</th>
+                                <th>Usługa</th>
+                                <th>Wykonawca</th>
+                                <th style="width: 130px">Cena (PLN)</th>
+                                <th style="width: 100px">Ilość</th>
+                                <th style="width: 80px">Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoice-lines-body">
+                            @if (Model.Lines != null && Model.Lines.Count > 0)
+                            {
+                                @for (int i = 0; i < Model.Lines.Count; i++)
+                                {
+                                    @Html.EditorFor(m => m.Lines[i])
+                                }
+                            }
+                            else
+                            {
+                                @* Jeśli brak linii, EditorTemplate nie będzie renderowany - JS doda je *@
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <button type="button" id="add-invoice-line" class="btn btn-secondary">
+                    <i class="bi bi-plus-circle"></i> Dodaj pozycję
+                </button>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-floppy"></i> Zapisz fakturę
+            </button>
+            <a asp-action="Index" class="btn btn-secondary btn-lg">Anuluj</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <script>
+            (function () {
+                var rowCount = document.querySelectorAll("#invoice-lines-body tr").length;
+
+                // Funkcja do aktualizacji numerów wierszy i atrybutów name
+                function reindexRows() {
+                    var rows = document.querySelectorAll("#invoice-lines-body tr.invoice-line-row");
+                    rows.forEach((row, idx) => {
+                        // Aktualizuj numer wiersza
+                        row.querySelector(".row-number").textContent = idx + 1;
+
+                        // Aktualizuj nazwy atrybutów inputów/selectów (Lines[oldIdx] -> Lines[newIdx])
+                        row.querySelectorAll("select, input").forEach(field => {
+                            var name = field.getAttribute("name");
+                            if (name) {
+                                var newName = name.replace(/Lines\[\d+\]/, "Lines[" + idx + "]");
+                                field.setAttribute("name", newName);
+
+                                // Zaktualizuj id dla label'i
+                                var id = field.getAttribute("id");
+                                if (id) {
+                                    var newId = id.replace(/_\d+_/, "_" + idx + "_");
+                                    field.setAttribute("id", newId);
+                                }
+                            }
+                        });
+
+                        // Aktualizuj validation message for
+                        row.querySelectorAll("span[data-valmsg-for]").forEach(span => {
+                            var valmsgFor = span.getAttribute("data-valmsg-for");
+                            if (valmsgFor) {
+                                var newValmsgFor = valmsgFor.replace(/_\d+_/, "_" + idx + "_");
+                                span.setAttribute("data-valmsg-for", newValmsgFor);
+                            }
+                        });
+                    });
+
+                    rowCount = rows.length;
+                }
+
+                // Funkcja do dodawania nowego wiersza
+                function addRow() {
+                    // Klonuj ostatni wiersz jako template
+                    var lastRow = document.querySelector("#invoice-lines-body tr.invoice-line-row");
+                    if (!lastRow) {
+                        // Jeśli nie ma żadnego wiersza, skonstruuj pusty (alternatywnie możesz ładować via fetch)
+                        console.warn("Brak template'u wiersza. Upewnij się że GetCreate zawiera co najmniej jedną linię.");
+                        return;
+                    }
+
+                    var newRow = lastRow.cloneNode(true);
+
+                    // Wyczyść wartości inputów w nowym wierszu
+                    newRow.querySelectorAll("input, select").forEach(field => {
+                        if (field.type !== "hidden") {
+                            field.value = "";
+                        }
+                    });
+
+                    // Usuń validation messages
+                    newRow.querySelectorAll("span.field-validation-error").forEach(span => {
+                        span.textContent = "";
+                    });
+
+                    // Dodaj do tabeli
+                    document.querySelector("#invoice-lines-body").appendChild(newRow);
+
+                    // Reindeksuj wszystkie wiersze
+                    reindexRows();
+
+                    // Przywróć validation (jeśli jest ustawiona biblioteka)
+                    if (typeof $ !== 'undefined' && $.validator) {
+                        $.validator.unobtrusive.parseDynamicContent(newRow);
+                    }
+                }
+
+                // Event listener: Dodaj wiersz
+                document.getElementById("add-invoice-line").addEventListener("click", function (e) {
+                    e.preventDefault();
+                    addRow();
+                });
+
+                // Event listener: Usuń wiersz
+                document.addEventListener("click", function (e) {
+                    if (e.target.closest(".remove-line")) {
+                        e.preventDefault();
+                        var row = e.target.closest("tr.invoice-line-row");
+                        var rowsCount = document.querySelectorAll("#invoice-lines-body tr.invoice-line-row").length;
+
+                        // Nie pozwól na usunięcie ostatniego wiersza (opcjonalnie)
+                        if (rowsCount <= 1) {
+                            alert("Faktura musi mieć co najmniej jedną pozycję.");
+                            return;
+                        }
+
+                        row.remove();
+                        reindexRows();
+                    }
+                });
+
+                // Inicjalizacja: jeśli brak wierszy, dodaj jeden pusty
+                window.addEventListener("load", function () {
+                    var rows = document.querySelectorAll("#invoice-lines-body tr.invoice-line-row");
+                    if (rows.length === 0) {
+                        addRow();
+                    }
+                    reindexRows();
+                });
+            })();
+        </script>
+}

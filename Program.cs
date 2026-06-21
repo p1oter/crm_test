@@ -1,8 +1,13 @@
 using CRM.Data;
 using Microsoft.EntityFrameworkCore;
 using Rotativa.AspNetCore;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var culture = new CultureInfo("en-US");
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

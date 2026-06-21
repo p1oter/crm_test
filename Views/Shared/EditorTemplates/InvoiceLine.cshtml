@@ -1,0 +1,43 @@
+﻿@model CRM.Models.InvoiceLine
+@{
+    var services = ViewData["Services"] as List<CRM.Models.Service> ?? new List<CRM.Models.Service>();
+    var employees = ViewData["Employees"] as List<CRM.Models.Employee> ?? new List<CRM.Models.Employee>();
+}
+
+<tr class="invoice-line-row">
+    <td class="align-middle row-number">1</td>
+
+    <td>
+        @Html.DropDownListFor(m => m.ServiceId,
+                     new SelectList(services, "Id", "Name", Model?.ServiceId),
+                     "-- Wybierz usługę --",
+                     new { @class = "form-select", required = "required" })
+        @Html.ValidationMessageFor(m => m.ServiceId, "", new { @class = "text-danger small" })
+    </td>
+
+    <td>
+        @Html.DropDownListFor(m => m.EmployeeId,
+                     new SelectList(employees.Select(e => new { Id = e.Id, Name = e.FirstName + " " + e.LastName }), "Id", "Name", Model?.EmployeeId),
+                     "-- Wybierz pracownika --",
+                     new { @class = "form-select", required = "required" })
+        @Html.ValidationMessageFor(m => m.EmployeeId, "", new { @class = "text-danger small" })
+    </td>
+
+    <td>
+        @Html.TextBoxFor(m => m.Price,
+                     new { @class = "form-control", type = "number", step = "0.01", required = "required", placeholder = "0.00" })
+        @Html.ValidationMessageFor(m => m.Price, "", new { @class = "text-danger small" })
+    </td>
+
+    <td>
+        @Html.TextBoxFor(m => m.Amount,
+                     new { @class = "form-control", type = "number", min = "1", value = (Model?.Amount > 0 ? Model.Amount : 1), required = "required" })
+        @Html.ValidationMessageFor(m => m.Amount, "", new { @class = "text-danger small" })
+    </td>
+
+    <td class="text-end">
+        <button type="button" class="btn btn-sm btn-danger remove-line" title="Usuń pozycję">
+            <i class="bi bi-trash"></i> Usuń
+        </button>
+    </td>
+</tr>
