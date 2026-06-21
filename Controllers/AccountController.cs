@@ -1,0 +1,131 @@
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+using CRM.Data;
+using CRM.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel.DataAnnotations;
+
+namespace CRM.Controllers
+{
+    [AllowAnonymous] // dostępny bez logowania
+    public class AccountController : Controller
+    {
+        private readonly CrmDbContext _context;
+        private readonly ILogger<AccountController> _logger;
+
+        public AccountController(CrmDbContext context, ILogger<AccountController> logger)
+        {
+            _context = context;
+            _logger = logger;
+        }
+
+        // GET: /Account/Login
+        [HttpGet]
+        public IActionResult Login(string? returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            return View(new LoginViewModel());
+        }
+
+        // POST: /Account/Login
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+
+            if (!ModelState.IsValid) return View(model);
+
+            var user = await _context.GuiUsers.FirstOrDefaultAsync(u => u.Login == model.Login);
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Niepoprawny login lub hasło.");
+                return View(model);
+            }
+
+            if (!VerifyPassword(model.Password, user.PasswordHash))
+            {
+                ModelState.AddModelError("", "Niepoprawny login lub hasło.");
+                return View(model);
+            }
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.Login),
+                new Claim(ClaimTypes.NameIdentifier, user.Login)
+                // dodaj role/other claims jeśli potrzebujesz
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = model.RememberMe,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8)
+            };
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, authProperties);
+
+            _logger.LogInformation("User {Login} logged in.", user.Login);
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        // POST: /Account/Logout
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Account");
+        }
+
+        // Simple password verification that supports bcrypt and fallback sha256
+        private bool VerifyPassword(string password, string storedHash)
+        {
+            if (string.IsNullOrEmpty(storedHash)) return false;
+
+            // bcrypt hash starts with $2a$, $2b$, $2y$ etc.
+            if (storedHash.StartsWith("$2"))
+            {
+                try
+                {
+                    // Requires BCrypt.Net-Next package
+                    return BCrypt.Net.BCrypt.Verify(password, storedHash);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            // fallback: compare SHA256 hex
+            using var sha = SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(password);
+            var hashBytes = sha.ComputeHash(bytes);
+            var hex = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+            return string.Equals(hex, storedHash.Trim().ToLowerInvariant(), StringComparison.Ordinal);
+        }
+    }
+
+    public class LoginViewModel
+    {
+        [Required]
+        public string Login { get; set; } = null!;
+
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; } = null!;
+
+        public bool RememberMe { get; set; }
+    }
+}

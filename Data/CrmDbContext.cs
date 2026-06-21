@@ -105,26 +105,26 @@ namespace CRM.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             // GUI_USER
-            modelBuilder.Entity<GuiUser>()
-                .ToTable("GUI_USER")
-                .HasKey(g => g.EmployeeId);
-            modelBuilder.Entity<GuiUser>()
-                .Property(g => g.EmployeeId).HasColumnName("EMPLOYEE_ID");
-            modelBuilder.Entity<GuiUser>()
-                .Property(g => g.RoleId).HasColumnName("ROLE_ID");
+            //modelBuilder.Entity<GuiUser>()
+            //    .ToTable("GUI_USER")
+            //    .HasKey(g => g.EmployeeId);
+            //modelBuilder.Entity<GuiUser>()
+            //    .Property(g => g.EmployeeId).HasColumnName("EMPLOYEE_ID");
+            //modelBuilder.Entity<GuiUser>()
+            //    .Property(g => g.RoleId).HasColumnName("ROLE_ID");
             modelBuilder.Entity<GuiUser>()
                 .Property(g => g.Login).HasColumnName("LOGIN");
             modelBuilder.Entity<GuiUser>()
                 .Property(g => g.PasswordHash).HasColumnName("PASSWORD_HASH");
-            modelBuilder.Entity<GuiUser>()
-                .HasOne(g => g.Employee)
-                .WithOne(e => e.GuiUser)
-                .HasForeignKey<GuiUser>(g => g.EmployeeId)
-                .OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<GuiUser>()
-                .HasOne(g => g.Role)
-                .WithMany(r => r.GuiUsers)
-                .HasForeignKey(g => g.RoleId);
+            //modelBuilder.Entity<GuiUser>()
+            //    .HasOne(g => g.Employee)
+            //    .WithOne(e => e.GuiUser)
+            //    .HasForeignKey<GuiUser>(g => g.EmployeeId)
+            //    .OnDelete(DeleteBehavior.Cascade);
+            //modelBuilder.Entity<GuiUser>()
+            //    .HasOne(g => g.Role)
+            //    .WithMany(r => r.GuiUsers)
+            //    .HasForeignKey(g => g.RoleId);
 
             // ROLE
             modelBuilder.Entity<Role>()

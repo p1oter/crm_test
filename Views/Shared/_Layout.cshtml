@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@inject IHttpContextAccessor HttpContextAccessor
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -20,34 +23,49 @@
         </button>
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <ul class="navbar-nav flex-grow-1"
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Clients" asp-action="Index">Klienci</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="Index">Pracownicy</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="EmployeeSkills" asp-action="Index">Umiejętności</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="ServiceGroups" asp-action="Index">Grupy</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Services" asp-action="Index">Usługi</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Index">Rezerwacje</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Billinfos" asp-action="Index">Rachunki</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Payments" asp-action="Index">Płatności</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Invoices" asp-action="Index">Faktury</a>
-    </li>
-</ul>
+                    @if (User?.Identity?.IsAuthenticated ?? false)
+                    {
+              <li class="nav-item">
+                  <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                      <button type="submit" class="btn btn-link nav-link">Wyloguj (@User.Identity.Name)</button>
+                  </form>
+              </li>
+                    }
+                    else
+                    {
+              <li class="nav-item">
+                  <a class="nav-link" asp-controller="Account" asp-action="Login">Zaloguj</a>
+              </li>
+                    }
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Clients" asp-action="Index">Klienci</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="Index">Pracownicy</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="EmployeeSkills" asp-action="Index">Umiejętności</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="ServiceGroups" asp-action="Index">Grupy</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Services" asp-action="Index">Usługi</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Reservations" asp-action="Index">Rezerwacje</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Billinfos" asp-action="Index">Rachunki</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Payments" asp-action="Index">Płatności</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Invoices" asp-action="Index">Faktury</a>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>
