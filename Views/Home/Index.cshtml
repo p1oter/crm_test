@@ -1,7 +1,188 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Microsoft.AspNetCore.Authorization
+
+@{
+    ViewData["Title"] = "Panel główny";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Panel główny</h1>
+        <p class="text-muted mb-0">Szybki dostęp do najważniejszych sekcji</p>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <!-- Clients -->
+        <div class="col">
+            <a asp-controller="Clients" asp-action="Index" class="card card-dashboard h-100 text-decoration-none">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="card-title mb-1">Klienci</h5>
+                            <div class="text-muted small">Lista klientów</div>
+                        </div>
+                    </div>
+                    <div class="mt-auto">
+                        <small class="text-muted">Zarządzaj klientami</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Employees -->
+        <div class="col">
+            <a asp-controller="Employees" asp-action="Index" class="card card-dashboard h-100 text-decoration-none">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="card-title mb-1">Pracownicy</h5>
+                            <div class="text-muted small">Lista pracowników</div>
+                        </div>
+                    </div>
+                    <div class="mt-auto"><small class="text-muted">Profile i umiejętności</small></div>
+                </div>
+            </a>
+        </div>
+
+        <!-- EmployeeSkills -->
+        <div class="col">
+            <a asp-controller="EmployeeSkills" asp-action="Index" class="card card-dashboard h-100 text-decoration-none">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="card-title mb-1">Umiejętności</h5>
+                            <div class="text-muted small">Przypisania umiejętności</div>
+                        </div>
+                    </div>
+                    <div class="mt-auto"><small class="text-muted">Zarządzaj kwalifikacjami</small></div>
+                </div>
+            </a>
+        </div>
+
+        <!-- ServiceGroups -->
+        <div class="col">
+            <a asp-controller="ServiceGroups" asp-action="Index" class="card card-dashboard h-100 text-decoration-none">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="card-title mb-1">Grupy usług</h5>
+                            <div class="text-muted small">Kategorie usług</div>
+                        </div>
+                    </div>
+                    <div class="mt-auto"><small class="text-muted">Organizuj usługi</small></div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Services -->
+        <div class="col">
+            <a asp-controller="Services" asp-action="Index" class="card card-dashboard h-100 text-decoration-none">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="card-title mb-1">Usługi</h5>
+                            <div class="text-muted small">Cennik usług</div>
+                        </div>
+                    </div>
+                    <div class="mt-auto"><small class="text-muted">Zarządzaj ofertą</small></div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Reservations -->
+        <div class="col">
+            <a asp-controller="Reservations" asp-action="Index" class="card card-dashboard h-100 text-decoration-none">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="card-title mb-1">Rezerwacje</h5>
+                            <div class="text-muted small">Terminy i rezerwacje</div>
+                        </div>
+                    </div>
+                    <div class="mt-auto"><small class="text-muted">Zarządzaj terminarzem</small></div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Billinfos -->
+        <div class="col">
+            <a asp-controller="Billinfos" asp-action="Index" class="card card-dashboard h-100 text-decoration-none">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="card-title mb-1">Rachunki</h5>
+                            <div class="text-muted small">Dane rozliczeniowe</div>
+                        </div>
+                    </div>
+                    <div class="mt-auto"><small class="text-muted">Ustawienia płatności</small></div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Payments -->
+        <div class="col">
+            <a asp-controller="Payments" asp-action="Index" class="card card-dashboard h-100 text-decoration-none">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="card-title mb-1">Płatności</h5>
+                            <div class="text-muted small">Historia płatności</div>
+                        </div>
+                    </div>
+                    <div class="mt-auto"><small class="text-muted">Monitoruj wpłaty</small></div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Invoices -->
+        <div class="col">
+            <a asp-controller="Invoices" asp-action="Index" class="card card-dashboard h-100 text-decoration-none">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div>
+                            <h5 class="card-title mb-1">Faktury</h5>
+                            <div class="text-muted small">Lista faktur</div>
+                        </div>
+                    </div>
+                    <div class="mt-auto"><small class="text-muted">Wystawiaj i drukuj</small></div>
+                </div>
+            </a>
+        </div>
+
+        <!-- GuiUsers (tylko jeśli uprawnienia) -->
+        <div class="col">
+            @{
+                var canManageGuiUsers = User.IsInRole("Admin") || User.HasClaim("CAN_MANAGE_GUI_USERS", "true");
+            }
+            @if (canManageGuiUsers)
+            {
+                    <a asp-controller="GuiUsers" asp-action="Index" class="card card-dashboard h-100 text-decoration-none">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="card-title mb-1">Konta</h5>
+                                    <div class="text-muted small">Zarządzaj użytkownikami GUI</div>
+                                </div>
+                            </div>
+                            <div class="mt-auto"><small class="text-muted">Uprawnienia i role</small></div>
+                        </div>
+                    </a>
+            }
+            else
+            {
+                    <div class="card card-dashboard h-100 text-muted disabled-card">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="card-title mb-1">Konta</h5>
+                                    <div class="text-muted small">Brak uprawnień</div>
+                                </div>
+                            </div>
+                            <div class="mt-auto"><small class="text-muted">Skontaktuj się z administratorem</small></div>
+                        </div>
+                    </div>
+            }
+        </div>
+    </div>
 </div>

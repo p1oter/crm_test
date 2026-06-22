@@ -23,22 +23,6 @@
         </button>
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <ul class="navbar-nav flex-grow-1">
-                        @if (User?.Identity?.IsAuthenticated ?? false)
-                        {
-                        <li class="nav-item">
-                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                    @Html.AntiForgeryToken()
-                                <button type="submit" class="btn btn-link nav-link">Wyloguj (@User.Identity.Name)</button>
-                            </form>
-                        </li>
-                        }
-                        else
-                        {
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Account" asp-action="Login">Zaloguj</a>
-                        </li>
-                        }
-
                 <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Clients" asp-action="Index">Klienci</a>
                 </li>
@@ -69,6 +53,21 @@
                 <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="GuiUsers" asp-action="Index">Konta</a>
                 </li>
+                        @if (User?.Identity?.IsAuthenticated ?? false)
+                        {
+                            <li class="nav-item ms-auto">
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-link nav-link ms-auto">Wyloguj (@User.Identity.Name)</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item ms-auto">
+                                <a class="nav-link" asp-controller="Account" asp-action="Login">Zaloguj</a>
+                            </li>
+                        }
             </ul>
         </div>
     </div>
@@ -80,11 +79,6 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - CRM - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

@@ -1,0 +1,22 @@
+﻿.card-dashboard {
+    border: 1px solid #e9ecef;
+    transition: transform .12s ease, box-shadow .12s ease;
+    color: inherit;
+}
+
+    .card-dashboard:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        text-decoration: none;
+    }
+
+.display-count {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.65rem;
+}
+
+.disabled-card {
+    background: #f8f9fa;
+    opacity: 0.85;
+    pointer-events: none;
+}
