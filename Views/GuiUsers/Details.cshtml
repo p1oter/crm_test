@@ -1,0 +1,45 @@
+﻿@model CRM.Models.GuiUserDetailsViewModel
+
+@{
+    ViewData["Title"] = "Szczegóły użytkownika";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Login</dt>
+            <dd class="col-sm-9">@Model.Login</dd>
+
+            <dt class="col-sm-3">Pracownik</dt>
+            <dd class="col-sm-9">
+                @if (!string.IsNullOrEmpty(Model.EmployeeName))
+                {
+                    @Model.EmployeeName
+                }
+                else
+                {
+                        <span class="text-muted">Id: @Model.EmployeeId</span>
+                }
+            </dd>
+
+            <dt class="col-sm-3">Rola</dt>
+            <dd class="col-sm-9">
+                @if (!string.IsNullOrEmpty(Model.RoleName))
+                {
+                    @Model.RoleName
+                }
+                else
+                {
+                        <span class="text-muted">Id: @Model.RoleId</span>
+                }
+            </dd>
+        </dl>
+
+        <a asp-action="Edit" asp-route-id="@Model.Login" class="btn btn-primary">
+            <i class="bi bi-pencil"></i> Edytuj
+        </a>
+        <a asp-action="Index" class="btn btn-secondary">Powrót</a>
+    </div>
+</div>

@@ -60,6 +60,8 @@ builder.Services.AddAuthorization(options =>
 
     options.AddPolicy("CanManageReservations", policy =>
         policy.RequireClaim("CAN_MAKE_RESERVATIONS", "true"));
+    options.AddPolicy("CanManageGuiUsers", policy =>
+        policy.RequireClaim("CAN_MANAGE_GUI_USERS", "true"));
 
 });
 

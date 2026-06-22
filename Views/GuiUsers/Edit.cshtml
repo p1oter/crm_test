@@ -1,0 +1,53 @@
+﻿@model CRM.Models.GuiUserViewModel
+@{
+    ViewData["Title"] = "Edytuj użytkownika";
+    var employees = ViewData["Employees"] as List<SelectListItem> ?? new List<SelectListItem>();
+    var roles = ViewData["Roles"] as List<SelectListItem> ?? new List<SelectListItem>();
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Login" />
+
+    <div class="mb-3">
+        <label class="form-label">Login</label>
+        <input asp-for="Login" class="form-control" readonly />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label">Nowe hasło (pozostaw puste, aby nie zmieniać)</label>
+        <input asp-for="Password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ConfirmPassword" class="form-label">Powtórz hasło</label>
+        <input asp-for="ConfirmPassword" class="form-control" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EmployeeId" class="form-label">Pracownik</label>
+        <select asp-for="EmployeeId" class="form-select" asp-items="@(ViewData["Employees"] as IEnumerable<SelectListItem>)">
+            <option value="0">-- Brak --</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="RoleId" class="form-label">Rola</label>
+        <select asp-for="RoleId" class="form-select" asp-items="@(ViewData["Roles"] as IEnumerable<SelectListItem>)">
+            <option value="0">-- Brak --</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

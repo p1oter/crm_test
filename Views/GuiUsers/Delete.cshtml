@@ -1,0 +1,34 @@
+﻿@model CRM.Models.GuiUser
+@{
+    ViewData["Title"] = "Usuń użytkownika";
+    var employeeName = ViewData["EmployeeName"] as string ?? "";
+    var roleName = ViewData["RoleName"] as string ?? "";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="alert alert-warning">
+    Czy na pewno chcesz usunąć tego użytkownika? Operacja jest nieodwracalna.
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Login</dt>
+            <dd class="col-sm-9">@Model.Login</dd>
+
+            <dt class="col-sm-3">Pracownik</dt>
+            <dd class="col-sm-9">@(!string.IsNullOrEmpty(employeeName) ? employeeName : Model.EmployeeId.ToString())</dd>
+
+            <dt class="col-sm-3">Rola</dt>
+            <dd class="col-sm-9">@(!string.IsNullOrEmpty(roleName) ? roleName : Model.RoleId.ToString())</dd>
+        </dl>
+    </div>
+</div>
+
+<form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@Model.Login" />
+    <button type="submit" class="btn btn-danger">Usuń</button>
+    <a asp-action="Index" class="btn btn-secondary">Anuluj</a>
+</form>
