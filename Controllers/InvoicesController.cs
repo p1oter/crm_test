@@ -3,9 +3,11 @@ using CRM.Data;
 using CRM.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CRM.Controllers
 {
+    [Authorize(Policy = "CanManageInvoices")]
     public class InvoicesController : Controller
     {
         private readonly CrmDbContext _context;

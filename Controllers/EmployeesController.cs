@@ -3,9 +3,11 @@ using CRM.Data;
 using CRM.Models;
 using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CRM.Controllers
 {
+    [Authorize(Policy = "CanManageEmployees")]
     public class EmployeesController : Controller
     {
         private readonly CrmDbContext _context;

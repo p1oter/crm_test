@@ -27,7 +27,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/Account/Login";
         options.LogoutPath = "/Account/Logout";
-        options.AccessDeniedPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/AccessDenied";
         options.Cookie.Name = "crm_auth";
         options.ExpireTimeSpan = TimeSpan.FromHours(8);
         options.SlidingExpiration = true;
@@ -41,6 +41,26 @@ builder.Services.AddControllersWithViews(options =>
         .RequireAuthenticatedUser()
         .Build();
     options.Filters.Add(new AuthorizeFilter(policy));
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    // role-based works too, but definujemy policy per-permission
+    options.AddPolicy("CanManageInvoices", policy =>
+        policy.RequireClaim("CAN_MANAGE_INVOICES", "true"));
+
+    options.AddPolicy("CanManageEmployees", policy =>
+        policy.RequireClaim("CAN_MANAGE_EMPLOYEES", "true"));
+
+    options.AddPolicy("CanManageClients", policy =>
+        policy.RequireClaim("CAN_MANAGE_CLIENTS", "true"));
+
+    options.AddPolicy("CanManageServices", policy =>
+        policy.RequireClaim("CAN_MANAGE_SERVICES", "true"));
+
+    options.AddPolicy("CanManageReservations", policy =>
+        policy.RequireClaim("CAN_MAKE_RESERVATIONS", "true"));
+
 });
 
 var app = builder.Build();
@@ -64,6 +84,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Clients}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

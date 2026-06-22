@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Brak dostępu";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Brak dostępu</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead">
+                        Nie masz uprawnień, aby wykonać tę operację ani wyświetlić tej strony.
+                    </p>
+                    <p>
+                        Jeśli uważasz, że to błąd, skontaktuj się z administratorem systemu.<br />
+                        Możesz też wrócić do strony głównej lub sprawdzić inne dostępne sekcje.
+                    </p>
+
+                    <div class="mt-3">
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Powrót do strony głównej</a>
+                        @if (User?.Identity?.IsAuthenticated ?? false)
+                        {
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline ms-2">
+                                @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-outline-secondary">Wyloguj</button>
+                                </form>
+                        }
+                        else
+                        {
+                                <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary ms-2">Zaloguj</a>
+                        }
+                    </div>
+                </div>
+                <div class="card-footer text-muted small">
+                    @User?.Identity?.Name
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

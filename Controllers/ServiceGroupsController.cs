@@ -2,9 +2,11 @@
 using CRM.Data;
 using CRM.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CRM.Controllers
 {
+    [Authorize(Policy = "CanManageServices")]
     public class ServiceGroupsController : Controller
     {
         private readonly CrmDbContext _context;

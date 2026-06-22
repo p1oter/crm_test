@@ -2,9 +2,11 @@
 using CRM.Data;
 using CRM.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CRM.Controllers
 {
+    [Authorize(Policy = "CanManageReservations")]
     public class ReservationsController : Controller
     {
         private readonly CrmDbContext _context;
